@@ -1,0 +1,537 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Learning Stages with Sidebar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/codemirror.min.css">
+   
+  <style>
+        /* Global Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            height: 100vh;
+            margin: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        h1, h2, h3 {
+            margin-bottom: 16px;
+            color: #ffffff; /* White text for headings */
+        }
+
+        h1 {
+            font-size: 26px;
+        }
+
+        h2 {
+            font-size: 22px;
+        }
+
+        h3 {
+            font-size: 18px;
+        }
+
+        /* Sidebar, Content, and Right Section */
+        .left, .middle, .right {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow: auto;
+        }
+
+        .left {
+            flex: 0 0 25%; /* 25% of the screen */
+            background-color: #1a1a1a; /* Black for sidebar */
+            border-right: 2px solid #27ae60; /* Green border */
+        }
+
+        .middle {
+            flex: 0 0 50%; /* 50% of the screen */
+            background-color: #ffffff; /* White background */
+            color: #333; /* Dark text for readability */
+        }
+
+        .right {
+            flex: 0 0 25%; /* 25% of the screen */
+            background-color: #1a1a1a; /* Black for right section */
+            border-left: 2px solid #27ae60; /* Green border */
+            color: white; /* White text for contrast */
+        }
+
+        /* Inside Code and Output Sections */
+        .inside {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100vh;
+        }
+
+        .code {
+            height: 60%;
+            background-color: #333; /* Dark background for code section */
+            color: #ffffff; /* White text */
+            border: 1px solid #27ae60; /* Green border */
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            overflow: auto;
+        }
+
+        .out {
+            height: 40%;
+            background-color: #444; /* Slightly lighter black for output */
+            color: #ffffff;
+            border: 1px solid #27ae60; /* Green border */
+            padding: 20px;
+            border-radius: 8px;
+            overflow: auto;
+        }
+
+        /* Buttons */
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #27ae60; /* Green buttons */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-right: 5px;
+        }
+
+        button:hover {
+            background-color: #1e8449; /* Darker green on hover */
+        }
+
+        .button-row {
+            display: flex;
+            flex-direction: row;
+            margin-top: 10px;
+        }
+
+        /* CodeMirror and Pre Styles */
+        .CodeMirror {
+            width: 100%;
+            height: 60%;
+            font-size: 16px;
+            border: 1px solid #27ae60;
+            border-radius: 4px;
+        }
+
+        pre {
+            width: 100%;
+            height: 100%;
+            background-color: #2c3e50; /* Dark blue-black background */
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-y: auto;
+            font-family: monospace;
+        }
+
+        /* Timer and Note */
+        #timer {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #27ae60; /* Green timer text */
+        }
+
+        #note {
+            margin-top: 10px;
+            color: #e74c3c;
+            font-style: italic;
+        }
+
+        /* Solution Section */
+        .solution {
+            display: none;
+            margin-top: 10px;
+            padding: 15px;
+            border: 1px solid #27ae60;
+            border-radius: 8px;
+            background-color: #333;
+            color: #ffffff;
+        }
+
+        /* Sidebar and Stage List */
+        .sidebar h2 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .stage-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .stage-list li {
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            color: #27ae60; /* Green list items */
+            background-color: #1a1a1a; /* Black background */
+            border: 1px solid #27ae60; /* Green border */
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .stage-list li:hover {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .stage-list li.active {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .left, .middle, .right {
+                flex: 1;
+                padding: 10px;
+            }
+
+            .inside {
+                height: auto;
+            }
+
+            .code, .out {
+                height: auto;
+                margin-bottom: 15px;
+            }
+
+            button {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .button-row {
+                flex-direction: column;
+            }
+        }
+		.question{
+		font-size: 20px;
+        font-weight: bold;
+		color: #ffffff;
+		}
+		.extend{
+		font-weight: bold;
+		color: #ffffff;
+		}
+		
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+        <div class="left">
+            <h1>Python Learning Stages</h1>
+            <div id="timer">Time: <span id="timeDisplay">00:00</span></div>
+            <div class="question" id="question"></div>
+			<div id="solution" class="solution"><p>solution:</b></p></div>
+			<div class="extend" id="extend"></div>
+            
+            <div id="solution" class="solution"></div>
+        </div>
+
+        <div class="middle">
+		<div class="inside">
+		<div class="code">
+		  <h2>Write code below...</h2>
+			<textarea id="pythonCode" placeholder="Enter Python code here..."></textarea>
+            <div class="button-row">
+                <button id="runButton">Run Code</button>
+                <button id="solutionButton">Show/Hide Solution</button>
+                <button id="previousButton">Previous Stage</button>
+                <button id="nextButton">Next Stage</button>
+            </div>
+			<div id="note"></div>
+			</div>
+			<div class="out">
+            
+            <h2>Output</h2>
+            <pre id="output"></pre>
+            <div id="result" class="result"></div>
+			</div>
+			</div>
+        </div>
+		
+
+        <div class="right" id="sidebar">
+            <div class="sidebar">
+                <h2>Stages</h2>
+                <ul class="stage-list" id="stageList"></ul>
+            </div>
+        </div>
+
+        <button id="toggleSidebar">☰</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/addon/edit/closebrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/addon/edit/closetag.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/addon/edit/matchbrackets.min.js"></script>
+
+    <script>
+       var stages = [
+    // Section 1: Basic Input/Output and Variables
+    {
+        question: "Stage 1: Greeting Program",
+        correctOutput: "Enter your name: Alice\nEnter your age: 20\nHello, Alice! You are 20 years old.",
+        solution: "name = input('Enter your name: ')\nage = input('Enter your age: ')\nprint(f'Hello, {name}! You are {age} years old.')",
+        note: "Ensure the output matches the sample, including formatting."
+    },
+    {
+        question: "Stage 2: Simple Calculator",
+        correctOutput: "Enter first number: 10\nEnter second number: 5\nSum: 15\nDifference: 5\nProduct: 50\nQuotient: 2",
+        solution: "num1 = int(input('Enter first number: '))\nnum2 = int(input('Enter second number: '))\nprint(f'Sum: {num1 + num2}')\nprint(f'Difference: {num1 - num2}')\nprint(f'Product: {num1 * num2}')\nprint(f'Quotient: {num1 // num2}')",
+        note: "Use integer division for the quotient."
+    },
+    {
+        question: "Stage 3: Area of a Circle",
+        correctOutput: "Enter the radius of the circle: 7\nArea of the circle is 153.94",
+        solution: "import math\nradius = float(input('Enter the radius of the circle: '))\narea = math.pi * radius ** 2\nprint(f'Area of the circle is {area:.2f}')",
+        note: "Use the value of π from the math module and format the area to 2 decimal places."
+    },
+
+    // Section 2: Control Structures
+    {
+        question: "Stage 4: Number Comparison",
+        correctOutput: "Enter first number: 12\nEnter second number: 10\n12 is greater than 10",
+        solution: "num1 = int(input('Enter first number: '))\nnum2 = int(input('Enter second number: '))\nif num1 > num2:\n    print(f'{num1} is greater than {num2}')\nelif num1 < num2:\n    print(f'{num1} is less than {num2}')\nelse:\n    print(f'{num1} is equal to {num2}')",
+        note: "Include all cases: greater, less, and equal."
+    },
+    {
+        question: "Stage 5: Grading System",
+        correctOutput: "Enter your marks: 85\nYour grade is B.",
+        solution: "marks = int(input('Enter your marks: '))\nif marks >= 90:\n    print('Your grade is A.')\nelif marks >= 80:\n    print('Your grade is B.')\nelif marks >= 70:\n    print('Your grade is C.')\nelif marks >= 60:\n    print('Your grade is D.')\nelse:\n    print('Your grade is F.')",
+        note: "Make sure to handle each range of marks appropriately."
+    },
+    {
+        question: "Stage 6: Even or Odd",
+        correctOutput: "Enter a number: 7\nThe number is odd.",
+        solution: "num = int(input('Enter a number: '))\nif num % 2 == 0:\n    print('The number is even.')\nelse:\n    print('The number is odd.')",
+        note: "Use modulus operator to check for even or odd."
+    },
+    {
+        question: "Stage 7: Leap Year Check",
+        correctOutput: "Enter a year: 2024\n2024 is a leap year.",
+        solution: "year = int(input('Enter a year: '))\nif (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):\n    print(f'{year} is a leap year.')\nelse:\n    print(f'{year} is not a leap year.')",
+        note: "Follow the leap year rules: divisible by 4, not 100 unless also divisible by 400."
+    },
+
+    // Section 3: Loops
+    {
+        question: "Stage 8: Sum of Natural Numbers",
+        correctOutput: "Enter a number: 10\nThe sum of the first 10 natural numbers is 55.",
+        solution: "n = int(input('Enter a number: '))\nsum_n = sum(range(1, n+1))\nprint(f'The sum of the first {n} natural numbers is {sum_n}')",
+        note: "Use a loop or the sum() function."
+    },
+    {
+        question: "Stage 9: Multiplication Table",
+        correctOutput: "Enter a number: 5\n5 x 1 = 5\n5 x 2 = 10\n5 x 3 = 15\n...\n5 x 10 = 50",
+        solution: "num = int(input('Enter a number: '))\nfor i in range(1, 11):\n    print(f'{num} x {i} = {num * i}')",
+        note: "The table should go from 1 to 10."
+    },
+    {
+        question: "Stage 10: Factorial Calculation",
+        correctOutput: "Enter a number: 5\nThe factorial of 5 is 120.",
+        solution: "num = int(input('Enter a number: '))\nfactorial = 1\nfor i in range(1, num + 1):\n    factorial *= i\nprint(f'The factorial of {num} is {factorial}')",
+        note: "Factorial should be calculated using a loop."
+    },
+
+    // Section 4: Functions
+    {
+        question: "Stage 11: Function for Square",
+        correctOutput: "Square of 4 is 16",
+        solution: "def square(num):\n    return num ** 2\nresult = square(4)\nprint(f'Square of 4 is', result)",
+        note: "Define a function for calculating the square of a number."
+    },
+    {
+        question: "Stage 12: Temperature Conversion",
+        correctOutput: "25 degrees Celsius is 77.0 degrees Fahrenheit",
+        solution: "def celsius_to_fahrenheit(celsius):\n    return (celsius * 9/5) + 32\ntemp_f = celsius_to_fahrenheit(25)\nprint(f'25 degrees Celsius is {temp_f} degrees Fahrenheit')",
+        note: "Use the correct formula for Celsius to Fahrenheit conversion."
+    },
+    {
+        question: "Stage 13: Prime Number Check",
+        correctOutput: "7 is a prime number: True",
+        solution: "def is_prime(num):\n    if num < 2:\n        return False\n    for i in range(2, int(num**0.5) + 1):\n        if num % i == 0:\n            return False\n    return True\nresult = is_prime(7)\nprint(f'7 is a prime number:', result)",
+        note: "Check divisibility from 2 to sqrt of the number."
+    },
+
+    // Section 5: Lists and Loops
+    {
+        question: "Stage 14: List of Even Numbers",
+        correctOutput: "even_numbers = [2, 4, 6, 8]",
+        solution: "numbers = [1, 2, 3, 4, 5, 6, 7, 8]\neven_numbers = [num for num in numbers if num % 2 == 0]\nprint(even_numbers)",
+        note: "Use list comprehension to filter even numbers."
+    },
+    {
+        question: "Stage 15: Find the Largest Number",
+        correctOutput: "largest = 9",
+        solution: "numbers = [3, 5, 2, 9, 6]\nlargest = max(numbers)\nprint('largest =', largest)",
+        note: "Use the max() function to find the largest number."
+    },
+    {
+        question: "Stage 16: List Sorting",
+        correctOutput: "sorted_list = [1, 3, 4, 6, 8]",
+        solution: "numbers = [8, 3, 1, 6, 4]\nsorted_list = sorted(numbers)\nprint('sorted_list =', sorted_list)",
+        note: "Use the sorted() function to sort the list."
+    }
+];
+
+        var currentStage = 0;
+        var timer;
+        var timeElapsed = 0;
+
+        function startTimer() {
+            timer = setInterval(function() {
+                timeElapsed++;
+                var minutes = Math.floor(timeElapsed / 60);
+                var seconds = timeElapsed % 60;
+                document.getElementById('timeDisplay').innerText = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+            }, 1000);
+        }
+
+        function builtinRead(x) {
+            if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined) {
+                throw "File not found: '" + x + "'";
+            }
+            return Sk.builtinFiles["files"][x];
+        }
+
+        function input(promptText) {
+            var outputElement = document.getElementById('output');
+            return new Promise(function(resolve) {
+                var inputField = document.createElement('input');
+                inputField.setAttribute('type', 'text');
+                inputField.classList.add('console-input');
+                outputElement.appendChild(document.createTextNode(promptText));
+                outputElement.appendChild(inputField);
+
+                inputField.focus();
+
+                inputField.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        var userInput = inputField.value;
+                        outputElement.appendChild(document.createTextNode(userInput + '\n'));
+                        outputElement.removeChild(inputField);
+                        resolve(userInput);
+                    }
+                });
+            });
+        }
+
+        function runPythonCode() {
+            var outputElement = document.getElementById('output');
+            outputElement.innerHTML = '';
+            var code = editor.getValue();
+
+            Sk.configure({
+                output: function(text) {
+                    outputElement.appendChild(document.createTextNode(text));
+                },
+                read: builtinRead,
+                inputfun: input,
+                inputfunTakesPrompt: true
+            });
+
+            Sk.misceval.asyncToPromise(function() {
+                return Sk.importMainWithBody("<stdin>", false, code, true);
+            }).catch(function(err) {
+                outputElement.innerHTML = err.toString();
+            });
+
+            document.getElementById('note').innerText = stages[currentStage].note;
+        }
+
+        function showSolution() {
+            var solutionDiv = document.getElementById('solution');
+            solutionDiv.style.display = solutionDiv.style.display === 'block' ? 'none' : 'block';
+            solutionDiv.innerText = stages[currentStage].solution;
+        }
+
+        function updateStage() {
+            document.getElementById('question').innerText = stages[currentStage].question;
+			document.getElementById('extend').innerText = stages[currentStage].correctOutput;
+            document.getElementById('note').innerText = '';
+            document.getElementById('solution').style.display = 'none';
+            editor.setValue('');
+            document.getElementById('output').innerText = '';
+        }
+
+        function nextStage() {
+            if (currentStage < stages.length - 1) {
+                currentStage++;
+                updateStage();
+            }
+        }
+
+        function previousStage() {
+            if (currentStage > 0) {
+                currentStage--;
+                updateStage();
+            }
+        }
+
+        function createStageList() {
+            var stageList = document.getElementById('stageList');
+            stages.forEach(function(stage, index) {
+                var listItem = document.createElement('li');
+                listItem.innerText = stage.question;
+                listItem.addEventListener('click', function() {
+                    currentStage = index;
+                    updateStage();
+                });
+                stageList.appendChild(listItem);
+            });
+        }
+
+        document.getElementById('runButton').addEventListener('click', runPythonCode);
+        document.getElementById('solutionButton').addEventListener('click', showSolution);
+        document.getElementById('nextButton').addEventListener('click', nextStage);
+        document.getElementById('previousButton').addEventListener('click', previousStage);
+
+        // Sidebar toggle
+        document.getElementById('toggleSidebar').addEventListener('click', function() {
+            var sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        });
+
+        // Setup CodeMirror editor
+        var editor = CodeMirror.fromTextArea(document.getElementById('pythonCode'), {
+            mode: 'python',
+            lineNumbers: true,
+            autoCloseBrackets: true,
+            matchBrackets: true
+        });
+
+        updateStage();
+        startTimer();
+        createStageList();
+    </script>
+		
+</script>
+
+</body>
+</html>
