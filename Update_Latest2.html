@@ -292,113 +292,114 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/addon/edit/matchbrackets.min.js"></script>
 
     <script>
-       var stages = [
+var stages = [
     // Section 1: Basic Input/Output and Variables
     {
         question: "Stage 1: Greeting Program",
-        correctOutput: "Enter your name: Alice\nEnter your age: 20\nHello, Alice! You are 20 years old.",
-        solution: "name = input('Enter your name: ')\nage = input('Enter your age: ')\nprint(f'Hello, {name}! You are {age} years old.')",
+        correctOutput: "Here we have to input a name and it will show you the output \nOutput\nEnter your name: Hamza\nEnter your age: 17\nHello Hamza! You are 17 years old.",
+        solution: "name = input('Enter your name: ')\nage = input('Enter your age: ')\nprint('Hello', name + '! You are', age + ' years old.')",
         note: "Ensure the output matches the sample, including formatting."
     },
     {
         question: "Stage 2: Simple Calculator",
-        correctOutput: "Enter first number: 10\nEnter second number: 5\nSum: 15\nDifference: 5\nProduct: 50\nQuotient: 2",
-        solution: "num1 = int(input('Enter first number: '))\nnum2 = int(input('Enter second number: '))\nprint(f'Sum: {num1 + num2}')\nprint(f'Difference: {num1 - num2}')\nprint(f'Product: {num1 * num2}')\nprint(f'Quotient: {num1 // num2}')",
+        correctOutput: "You have to input two numbers and print the sum, difference, product, and quotient.\nOutput\nEnter first number: 10\nEnter second number: 5\nSum: 15\nDifference: 5\nProduct: 50\nQuotient: 2",
+        solution: "num1 = int(input('Enter first number: '))\nnum2 = int(input('Enter second number: '))\nprint('Sum:', num1 + num2)\nprint('Difference:', num1 - num2)\nprint('Product:', num1 * num2)\nprint('Quotient:', num1 // num2)",
         note: "Use integer division for the quotient."
     },
-    {
-        question: "Stage 3: Area of a Circle",
-        correctOutput: "Enter the radius of the circle: 7\nArea of the circle is 153.94",
-        solution: "import math\nradius = float(input('Enter the radius of the circle: '))\narea = math.pi * radius ** 2\nprint(f'Area of the circle is {area:.2f}')",
-        note: "Use the value of π from the math module and format the area to 2 decimal places."
-    },
+   {
+    question: "Stage 3: Area of a Circle",
+    correctOutput: "You need to input the radius of a circle and it will calculate the area.\narea = 3.1416 * radius ** 2\nOutput\nEnter the radius of the circle: 7\nArea of the circle is 153.94",
+    solution: "pi = 3.14159\nradius = float(input('Enter the radius of the circle: '))\narea = pi * radius ** 2\nprint('Area of the circle is', round(area, 2))",
+    note: "Use 3.14159 for π and format the area to 2 decimal places."
+},
 
     // Section 2: Control Structures
     {
         question: "Stage 4: Number Comparison",
-        correctOutput: "Enter first number: 12\nEnter second number: 10\n12 is greater than 10",
-        solution: "num1 = int(input('Enter first number: '))\nnum2 = int(input('Enter second number: '))\nif num1 > num2:\n    print(f'{num1} is greater than {num2}')\nelif num1 < num2:\n    print(f'{num1} is less than {num2}')\nelse:\n    print(f'{num1} is equal to {num2}')",
+        correctOutput: "You need to input two numbers and it will compare them.\nOutput\nEnter first number: 12\nEnter second number: 10\n12 is greater than 10",
+        solution: "num1 = int(input('Enter first number: '))\nnum2 = int(input('Enter second number: '))\nif num1 > num2:\n    print(num1, 'is greater than', num2)\nelif num1 < num2:\n    print(num1, 'is less than', num2)\nelse:\n    print(num1, 'is equal to', num2)",
         note: "Include all cases: greater, less, and equal."
     },
     {
-        question: "Stage 5: Grading System",
-        correctOutput: "Enter your marks: 85\nYour grade is B.",
-        solution: "marks = int(input('Enter your marks: '))\nif marks >= 90:\n    print('Your grade is A.')\nelif marks >= 80:\n    print('Your grade is B.')\nelif marks >= 70:\n    print('Your grade is C.')\nelif marks >= 60:\n    print('Your grade is D.')\nelse:\n    print('Your grade is F.')",
-        note: "Make sure to handle each range of marks appropriately."
-    },
+    question: "Stage 5: Grading System",
+    correctOutput: "You need to input marks and it will assign a grade based on the value.\nGrading system:\n90 and above: A\n80-89: B\n70-79: C\n60-69: D\nBelow 60: F\nOutput\nEnter your marks: 85\nYour grade is B.",
+    solution: "marks = int(input('Enter your marks: '))\nif marks >= 90:\n    print('Your grade is A.')\nelif marks >= 80:\n    print('Your grade is B.')\nelif marks >= 70:\n    print('Your grade is C.')\nelif marks >= 60:\n    print('Your grade is D.')\nelse:\n    print('Your grade is F.')",
+    note: "Make sure to handle each range of marks appropriately."
+},
     {
         question: "Stage 6: Even or Odd",
-        correctOutput: "Enter a number: 7\nThe number is odd.",
+        correctOutput: "You need to input a number and it will tell if the number is even or odd.\nOutput\nEnter a number: 7\nThe number is odd.",
         solution: "num = int(input('Enter a number: '))\nif num % 2 == 0:\n    print('The number is even.')\nelse:\n    print('The number is odd.')",
         note: "Use modulus operator to check for even or odd."
     },
     {
         question: "Stage 7: Leap Year Check",
-        correctOutput: "Enter a year: 2024\n2024 is a leap year.",
-        solution: "year = int(input('Enter a year: '))\nif (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):\n    print(f'{year} is a leap year.')\nelse:\n    print(f'{year} is not a leap year.')",
+        correctOutput: "You need to input a year and it will check if it's a leap year.\nOutput\nEnter a year: 2024\n2024 is a leap year.",
+        solution: "year = int(input('Enter a year: '))\nif (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):\n    print(year, 'is a leap year.')\nelse:\n    print(year, 'is not a leap year.')",
         note: "Follow the leap year rules: divisible by 4, not 100 unless also divisible by 400."
     },
 
     // Section 3: Loops
-    {
-        question: "Stage 8: Sum of Natural Numbers",
-        correctOutput: "Enter a number: 10\nThe sum of the first 10 natural numbers is 55.",
-        solution: "n = int(input('Enter a number: '))\nsum_n = sum(range(1, n+1))\nprint(f'The sum of the first {n} natural numbers is {sum_n}')",
-        note: "Use a loop or the sum() function."
-    },
+   {
+    question: "Stage 8: Sum of Natural Numbers",
+    correctOutput: "You need to input a number and it will calculate the sum of the first n natural numbers.\nOutput\nEnter a number: 10\nThe sum of the first 10 natural numbers is 55.",
+    solution: "n = int(input('Enter a number: '))\nsum_n = 0\n# Loop through numbers from 1 to n\nfor i in range(1, n+1):\n     sum_n += i  # Add each number to sum_n\nprint('The sum of the first', n, 'natural numbers is', sum_n)",
+    note: "Use a for loop to calculate the sum, adding numbers one by one. for loop must have indentation"
+},
     {
         question: "Stage 9: Multiplication Table",
-        correctOutput: "Enter a number: 5\n5 x 1 = 5\n5 x 2 = 10\n5 x 3 = 15\n...\n5 x 10 = 50",
-        solution: "num = int(input('Enter a number: '))\nfor i in range(1, 11):\n    print(f'{num} x {i} = {num * i}')",
+        correctOutput: "You need to input a number and it will print the multiplication table.\nOutput\nEnter a number: 5\n5 x 1 = 5\n5 x 2 = 10\n...\n5 x 10 = 50",
+        solution: "num = int(input('Enter a number: '))\nfor i in range(1, 11):\n    print(num, 'x', i, '=', num * i)",
         note: "The table should go from 1 to 10."
     },
     {
         question: "Stage 10: Factorial Calculation",
-        correctOutput: "Enter a number: 5\nThe factorial of 5 is 120.",
-        solution: "num = int(input('Enter a number: '))\nfactorial = 1\nfor i in range(1, num + 1):\n    factorial *= i\nprint(f'The factorial of {num} is {factorial}')",
+        correctOutput: "You need to input a number and it will calculate the factorial.\nOutput\nEnter a number: 5\nThe factorial of 5 is 120.",
+        solution: "num = int(input('Enter a number: '))\nfactorial = 1\nfor i in range(1, num + 1):\n    factorial *= i\nprint('The factorial of', num, 'is', factorial)",
         note: "Factorial should be calculated using a loop."
     },
 
     // Section 4: Functions
     {
         question: "Stage 11: Function for Square",
-        correctOutput: "Square of 4 is 16",
-        solution: "def square(num):\n    return num ** 2\nresult = square(4)\nprint(f'Square of 4 is', result)",
+        correctOutput: "You need to calculate the square of a number using a function.\nOutput\nSquare of 4 is 16",
+        solution: "def square(num):\n    return num ** 2\nresult = square(4)\nprint('Square of 4 is', result)",
         note: "Define a function for calculating the square of a number."
     },
     {
         question: "Stage 12: Temperature Conversion",
-        correctOutput: "25 degrees Celsius is 77.0 degrees Fahrenheit",
-        solution: "def celsius_to_fahrenheit(celsius):\n    return (celsius * 9/5) + 32\ntemp_f = celsius_to_fahrenheit(25)\nprint(f'25 degrees Celsius is {temp_f} degrees Fahrenheit')",
+        correctOutput: "You need to convert Celsius to Fahrenheit using a function.\nOutput\n25 degrees Celsius is 77.0 degrees Fahrenheit",
+        solution: "def celsius_to_fahrenheit(celsius):\n    return (celsius * 9/5) + 32\ntemp_f = celsius_to_fahrenheit(25)\nprint('25 degrees Celsius is', temp_f, 'degrees Fahrenheit')",
         note: "Use the correct formula for Celsius to Fahrenheit conversion."
     },
     {
         question: "Stage 13: Prime Number Check",
-        correctOutput: "7 is a prime number: True",
-        solution: "def is_prime(num):\n    if num < 2:\n        return False\n    for i in range(2, int(num**0.5) + 1):\n        if num % i == 0:\n            return False\n    return True\nresult = is_prime(7)\nprint(f'7 is a prime number:', result)",
+        correctOutput: "You need to check if a number is prime using a function.\nOutput\n7 is a prime number: True",
+        solution: "def is_prime(num):\n    if num < 2:\n        return False\n    for i in range(2, int(num**0.5) + 1):\n        if num % i == 0:\n            return False\n    return True\nresult = is_prime(7)\nprint('7 is a prime number:', result)",
         note: "Check divisibility from 2 to sqrt of the number."
     },
 
     // Section 5: Lists and Loops
     {
         question: "Stage 14: List of Even Numbers",
-        correctOutput: "even_numbers = [2, 4, 6, 8]",
-        solution: "numbers = [1, 2, 3, 4, 5, 6, 7, 8]\neven_numbers = [num for num in numbers if num % 2 == 0]\nprint(even_numbers)",
+        correctOutput: "You need to filter the even numbers from a list.\nOutput\neven_numbers = [2, 4, 6, 8]",
+        solution: "numbers = [1, 2, 3, 4, 5, 6, 7, 8]\neven_numbers = [num for num in numbers if num % 2 == 0]\nprint('even_numbers =', even_numbers)",
         note: "Use list comprehension to filter even numbers."
     },
     {
-        question: "Stage 15: Find the Largest Number",
-        correctOutput: "largest = 9",
-        solution: "numbers = [3, 5, 2, 9, 6]\nlargest = max(numbers)\nprint('largest =', largest)",
-        note: "Use the max() function to find the largest number."
-    },
+    question: "Stage 15: Find the Largest Number",
+    correctOutput: "You need to find the largest number from a list.\nOutput\nlargest = 9",
+    solution: "numbers = [3, 5, 2, 9, 6]\nlargest = numbers[0]\n# Loop through the list to find the largest number\nfor num in numbers:\n    if num > largest:\n        largest = num\nprint('largest =', largest)",
+    note: "Loop through the list to find the largest number instead of using max()."
+},
     {
-        question: "Stage 16: List Sorting",
-        correctOutput: "sorted_list = [1, 3, 4, 6, 8]",
-        solution: "numbers = [8, 3, 1, 6, 4]\nsorted_list = sorted(numbers)\nprint('sorted_list =', sorted_list)",
-        note: "Use the sorted() function to sort the list."
-    }
+    question: "Stage 16: Sort the List",
+    correctOutput: "You need to sort the numbers in ascending order.\nOutput\nsorted_numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]",
+    solution: "numbers = [7, 3, 1, 9, 2, 8, 5, 6, 4]\n# Implement bubble sort algorithm to sort the list\nfor i in range(len(numbers)):\n    for j in range(0, len(numbers) - i - 1):\n        if numbers[j] > numbers[j + 1]:\n            # Swap if the number is greater than the next number\n            numbers[j], numbers[j + 1] = numbers[j + 1], numbers[j]\nprint('sorted_numbers =', numbers)",
+    note: "Implement a sorting algorithm (e.g., bubble sort) instead of using the sorted() function."
+}
 ];
+
 
         var currentStage = 0;
         var timer;
