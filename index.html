@@ -469,7 +469,9 @@ var stages = [
         function showSolution() {
             var solutionDiv = document.getElementById('solution');
             solutionDiv.style.display = solutionDiv.style.display === 'block' ? 'none' : 'block';
-            solutionDiv.innerText = stages[currentStage].solution;
+                var text = stages[currentStage].solution;
+		var formattedText = text.replace(/\n/g, "<br>").replace(/ /g, "&nbsp;");
+	        document.getElementById("solution").innerHTML = formattedText;
         }
 
         function updateStage() {
