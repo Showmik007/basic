@@ -388,13 +388,13 @@ var stages = [
     },
     {
     question: "Stage 15: Find the Largest Number",
-    correctOutput: "You need to find the largest number from a list.\nOutput\nlargest = 9",
+    correctOutput: "You need to find the largest number from a list.\nnumbers = [3, 5, 2, 9, 6]\nOutput\nlargest = 9",
     solution: "numbers = [3, 5, 2, 9, 6]\nlargest = numbers[0]\n# Loop through the list to find the largest number\nfor num in numbers:\n    if num > largest:\n        largest = num\nprint('largest =', largest)",
     note: "Loop through the list to find the largest number instead of using max()."
 },
     {
     question: "Stage 16: Sort the List",
-    correctOutput: "You need to sort the numbers in ascending order.\nOutput\nsorted_numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]",
+    correctOutput: "You need to sort the numbers in ascending order.\nnumbers = [7, 3, 1, 9, 2, 8, 5, 6, 4]\nOutput\nsorted_numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]",
     solution: "numbers = [7, 3, 1, 9, 2, 8, 5, 6, 4]\n# Implement bubble sort algorithm to sort the list\nfor i in range(len(numbers)):\n    for j in range(0, len(numbers) - i - 1):\n        if numbers[j] > numbers[j + 1]:\n            # Swap if the number is greater than the next number\n            numbers[j], numbers[j + 1] = numbers[j + 1], numbers[j]\nprint('sorted_numbers =', numbers)",
     note: "Implement a sorting algorithm (e.g., bubble sort) instead of using the sorted() function."
 }
