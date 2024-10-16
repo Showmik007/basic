@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Learning Stages with Sidebar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/codemirror.min.css">
+   
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column; /* Changed to column for nav on top */
+            height: 100vh;
+            margin: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between; /* Space between logo and menu */
+            align-items: center;
+            background-color: #1a1a1a; /* Background for nav */
+            padding: 10px 20px;
+            color: white;
+        }
+
+        .navbar h1 {
+            margin: 0; /* Remove margin for the logo */
+        }
+
+        .menu {
+            display: flex;
+            gap: 10px; /* Space between menu items */
+        }
+
+        .menu-item {
+    display: block;
+    padding: 10px 15px; /* Add some padding for better spacing */
+    color: white; /* White text */
+    text-align: center;
+    background-color: #1a1a1a; /* Black background */
+    border: 2px solid #27ae60; /* Green border */
+    border-radius: 8px; /* Rounded corners for a modern look */
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease; /* Smooth transitions */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+}
+
+.menu-item:hover {
+    background-color: #27ae60; /* Green background on hover */
+    color: black; /* Black text on hover */
+    transform: scale(1.05); /* Slight zoom effect on hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Increase shadow on hover for a pop-out effect */
+}
+
+        .submenu {
+            display: none; /* Hidden by default */
+            position: absolute;
+            background-color: #333; /* Dark background for submenu */
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 10; /* Ensures submenu is above other content */
+        }
+
+        .menu-item:hover .submenu {
+            display: block; /* Show submenu on hover */
+        }
+
+        /* Other Styles (No changes to the original styles) */
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        h1, h2, h3 {
+            margin-bottom: 16px;
+            color: #ffffff;
+        }
+
+        h1 {
+            font-size: 26px;
+        }
+
+        h2 {
+            font-size: 22px;
+        }
+
+        h3 {
+            font-size: 18px;
+        }
+
+        .left, .middle, .right {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow: auto;
+        }
+
+        .left {
+            flex: 0 0 25%;
+            background-color: #1a1a1a;
+            border-right: 2px solid #27ae60;
+        }
+
+        .middle {
+            flex: 0 0 50%;
+            background-color: #ffffff;
+            color: #333;
+        }
+
+        .right {
+            flex: 0 0 25%;
+            background-color: #1a1a1a;
+            border-left: 2px solid #27ae60;
+            color: white;
+			
+        }
+
+        .inside {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100vh;
+        }
+
+        .code {
+            height: 60%;
+            background-color: #333;
+            color: #ffffff;
+            border: 1px solid #27ae60;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            overflow: auto;
+        }
+
+        .out {
+            height: 40%;
+            background-color: #444;
+            color: #ffffff;
+            border: 1px solid #27ae60;
+            padding: 20px;
+            border-radius: 8px;
+            overflow: auto;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-right: 5px;
+        }
+
+        button:hover {
+            background-color: #1e8449;
+        }
+
+        .button-row {
+            display: flex;
+            flex-direction: row;
+            margin-top: 10px;
+        }
+
+        .CodeMirror {
+            width: 100%;
+            height: 60%;
+            font-size: 16px;
+            border: 1px solid #27ae60;
+            border-radius: 4px;
+        }
+
+        pre {
+            width: 100%;
+            height: 100%;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-y: auto;
+            font-family: monospace;
+        }
+
+        #timer {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #27ae60;
+        }
+
+        #note {
+            margin-top: 10px;
+            color: #e74c3c;
+            font-style: italic;
+        }
+
+        .solution {
+            display: none;
+            margin-top: 10px;
+            padding: 15px;
+            border: 1px solid #27ae60;
+            border-radius: 8px;
+            background-color: #333;
+            color: #ffffff;
+        }
+
+        .sidebar h2 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .stage-list {
+            list-style-type: none;
+            padding-right: 100px;
+        }
+
+        .stage-list li {
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            color: #27ae60; /* Green list items */
+            background-color: #1a1a1a; /* Black background */
+            border: 1px solid #27ae60; /* Green border */
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .stage-list li:hover {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .stage-list li.active {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        @media screen and (max-width: 768px) {
+            .left, .middle, .right {
+                flex: 1;
+                padding: 10px;
+            }
+
+            .inside {
+                height: auto;
+            }
+
+            .code, .out {
+                height: auto;
+                margin-bottom: 15px;
+            }
+
+            button {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .button-row {
+                flex-direction: column;
+            }
+        }
+
+        .question {
+            white-space: pre;
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+        .extend {
+            font-weight: bold;
+            color: #ffffff;
+        }
+		
+
+#noteModal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.7); /* Darker background for contrast */
+    transition: opacity 0.3s ease; /* Transition effect for opacity */
+}
+
+.modal-content {
+    background-color: #fff; /* White background for modal content */
+    margin: 10% auto; /* 10% from the top and bottom, centered */
+    padding: 20px;
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); /* Shadow effect */
+    width: 80%; /* Could be more or less, depending on screen size */
+    max-height: 80%; /* Max height of the modal */
+    overflow-y: auto; /* Enable vertical scrolling */
+    animation: fadeIn 0.5s; /* Animation for showing the modal */
+}
+
+/* Animation for fadeIn effect */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px); /* Start from slightly above */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0); /* End at normal position */
+    }
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000; /* Darker color on hover */
+    text-decoration: none;
+    cursor: pointer;
+}
+a{
+       text-decoration: none;
+    }
+
+
+    </style>
+
+</head>
+<body>
+
+   <div class="navbar"> 
+    <h1>Showmik Sir</h1>
+    <div class="menu">
+       <a href="basic.html"> <div class="menu-item" >Basic</div></a>
+        
+        <div style="background-color: #27ae60; /* Green background on hover */
+    color: black; /* Black text on hover */
+    transform: scale(1.05); /* Slight zoom effect on hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Increase shadow on hover for a pop-out effect */
+ "class="menu-item"class="menu-item">
+            Advanced
+        </div>
+        
+        <div class="menu-item">Intermediate</div>
+    </div>
+</div>
+
+   <div class="container">
+        <div class="left">
+            <h1>Python Learning Stages</h1>
+            <div id="timer">Time: <span id="timeDisplay">00:00</span></div>
+            <div class="question" id="question"></div>
+			<div id="solution" class="solution"><p>solution:</b></p></div>
+			<div class="extend" id="extend"></div>
+            
+            <div id="solution" class="solution"></div>
+        </div>
+
+        <div class="middle">
+		<div class="inside">
+		<div class="code">
+		  <h2>Write code below...</h2>
+			<textarea id="pythonCode" placeholder="Enter Python code here..."></textarea>
+            <div class="button-row">
+                <button id="runButton">Run Code</button>
+				<button id="flashNoteButton">Flash Note</button>
+                <button id="solutionButton">Show/Hide Solution</button>
+                <button id="previousButton">Previous Stage</button>
+                <button id="nextButton">Next Stage</button>
+            </div>
+			<div id="note"></div>
+			</div>
+			<div class="out">
+            
+            <h2>Output</h2>
+            <pre id="output"></pre>
+            <div id="result" class="result"></div>
+			</div>
+			</div>
+        </div>
+		
+
+        <div class="right" id="sidebar">
+            <div class="sidebar">
+                <h2>Stages</h2>
+                <ul class="stage-list" id="stageList"></ul>
+            </div>
+        </div>
+
+        <button id="toggleSidebar">☰</button>
+    </div>
+	
+	 <!-- Modal for Notes -->
+    <div id="noteModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3 style="color:  #27ae60; /">Note</h3>
+            <p id="noteText"></p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/addon/edit/closebrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/addon/edit/closetag.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/addon/edit/matchbrackets.min.js"></script>
+
+
+
+  <script>
+        // Flash Note Button Event
+        document.getElementById('flashNoteButton').onclick = function() {
+            var noteText = stages[currentStage].note || "No note available.";
+            
+            // Set the note text with HTML rendering
+            document.getElementById('noteText').innerHTML = noteText;
+            
+            // Show the modal
+            document.getElementById('noteModal').style.display = "flex";
+        };
+
+        // Close Modal
+        document.querySelector('.close').onclick = function() {
+            document.getElementById('noteModal').style.display = "none";
+        };
+
+        // Hide Modal when clicked outside
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('noteModal')) {
+                document.getElementById('noteModal').style.display = "none";
+            }
+        };
+    </script>
+
+
+    <script>
+var stages = [
+    // Section 2: Intermediate Input/Output and Control Structures
+    {
+        question: "Stage 1: Multiplication Table",
+        correctOutput: "You are required to input a number and print its multiplication table up to 10.\nExample Input: 7\nExpected Output:\n7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n...\n7 x 10 = 70",
+        solution: "num = int(input('Enter a number: '))\nfor i in range(1, 11):\n    print(f'{num} x {i} = {num * i}')",
+        note: "<h2 style='color: black;'>Multiplication Table Function Description</h2><br>" +
+              "<ul>" +
+                  "<li><strong>Input for Number:</strong><br>" +
+                      "<ul>" +
+                          "<li><code>num = int(input('Enter a number: '))</code><br>" +
+                          "Prompts the user to enter a number.</li>" +
+                          "<li><code>input()</code> captures user input as a string.</li>" +
+                          "<li><code>int()</code> converts the string input to an integer.</li>" +
+                      "</ul>" +
+                  "</li><br>" +
+                  "<li><strong>Generating the Multiplication Table:</strong><br>" +
+                      "<ul>" +
+                          "<li><code>for i in range(1, 11):</code><br>" +
+                          "Iterates through numbers 1 to 10.</li>" +
+                          "<li><code>print(f'{num} x {i} = {num * i}')</code><br>" +
+                          "Prints each line of the multiplication table using f-string formatting.</li>" +
+                      "</ul>" +
+                  "</li>" +
+              "</ul>"
+    },
+    {
+        question: "Stage 2: Count Vowels and Consonants in a String",
+        correctOutput: "Write a Python program that reads a string and counts the number of vowels and consonants. Use a for loop to iterate through the characters.\nExample Input: \"Hello World\"\nExpected Output:\n• Vowels: 3\n• Consonants: 7",
+        solution: "string = input('Enter a string: ')\nvowels = 'aeiouAEIOU'\nvowel_count = 0\nconsonant_count = 0\nfor char in string:\n    if char.isalpha():\n        if char in vowels:\n            vowel_count += 1\n        else:\n            consonant_count += 1\nprint(f'Vowels: {vowel_count}')\nprint(f'Consonants: {consonant_count}')",
+        note: "<h2 style='color: black;'>Vowel and Consonant Counting Function Description</h2><br>" +
+              "<ul>" +
+                  "<li><strong>Input for String:</strong><br>" +
+                      "<ul>" +
+                          "<li><code>string = input('Enter a string: ')</code><br>" +
+                          "Prompts the user to enter a string.</li>" +
+                      "</ul>" +
+                  "</li><br>" +
+                  "<li><strong>Counting Vowels and Consonants:</strong><br>" +
+                      "<ul>" +
+                          "<li><code>for char in string:</code><br>" +
+                          "Iterates through each character in the string.</li>" +
+                          "<li><code>if char.isalpha():</code><br>" +
+                          "Checks if the character is an alphabet.</li>" +
+                          "<li><code>if char in vowels:</code><br>" +
+                          "Checks if the character is a vowel.</li>" +
+                          "<li><code>vowel_count += 1</code> and <code>consonant_count += 1</code><br>" +
+                          "Updates counts accordingly.</li>" +
+                      "</ul>" +
+                  "</li>" +
+              "</ul>"
+    },
+    {
+        question: "Stage 3: Sum of Digits in an Input Number",
+        correctOutput: "Write a Python program that reads a number from the user, calculates the sum of its digits, and prints the result.\nExample Input: 12345\nExpected Output: Sum of digits: 15",
+        solution: "num = input('Enter a number: ')\nsum_of_digits = 0\nfor digit in num:\n    sum_of_digits += int(digit)\nprint(f'Sum of digits: {sum_of_digits}')",
+        note: "<h2 style='color: black;'>Sum of Digits Function Description</h2><br>" +
+              "<ul>" +
+                  "<li><strong>Input for Number:</strong><br>" +
+                      "<ul>" +
+                          "<li><code>num = input('Enter a number: ')</code><br>" +
+                          "Prompts the user to enter a number.</li>" +
+                      "</ul>" +
+                  "</li><br>" +
+                  "<li><strong>Calculating Sum of Digits:</strong><br>" +
+                      "<ul>" +
+                          "<li><code>for digit in num:</code><br>" +
+                          "Iterates through each character in the number string.</li>" +
+                          "<li><code>sum_of_digits += int(digit)</code><br>" +
+                          "Converts the character to an integer and adds it to the sum.</li>" +
+                      "</ul>" +
+                  "</li>" +
+              "</ul>"
+    },
+    {
+        question: "Stage 4: Check if Input is Palindrome",
+        correctOutput: "Write a Python program that checks whether an input is a palindrome (reads the same forward and backward). Use a for loop and nested if statements to compare elements from both ends of the array.\nExample Input: 12321\nExpected Output: This is a palindrome",
+        solution: "num = input('Enter a number: ')\nis_palindrome = True\nlength = len(num)\nfor i in range(length // 2):\n    if num[i] != num[length - 1 - i]:\n        is_palindrome = False\nif is_palindrome:\n    print('This is a palindrome')\nelse:\n    print('This is not a palindrome')",
+        note: "<h2 style='color: black;'>Palindrome Check Function Description</h2><br>" +
+              "<ul>" +
+                  "<li><strong>Input for Number:</strong><br>" +
+                      "<ul>" +
+                          "<li><code>num = input('Enter a number: ')</code><br>" +
+                          "Prompts the user to enter a number.</li>" +
+                      "</ul>" +
+                  "</li><br>" +
+                  "<li><strong>Checking Palindrome:</strong><br>" +
+                      "<ul>" +
+                          "<li><code>for i in range(length // 2):</code><br>" +
+                          "Iterates only through the first half of the number.</li>" +
+                          "<li><code>if num[i] != num[length - 1 - i]:</code><br>" +
+                          "Compares characters from the start and end.</li>" +
+                          "<li><code>is_palindrome = False</code><br>" +
+                          "Sets the flag if characters do not match.</li>" +
+                      "</ul>" +
+                  "</li>" +
+              "</ul>"
+    },
+    {
+        question: "Stage 5: Remove Duplicates from an Array",
+        correctOutput: "Write a Python program that removes duplicate elements from a 1D array. Use a for loop to iterate through the array and a nested if statement to check for duplicates.\nExample Input: [1, 2, 2, 3, 4, 4, 5]\nExpected Output: [1, 2, 3, 4, 5]",
+        solution: "arr = [1, 2, 2, 3, 4, 4, 5]\nunique_arr = []\nfor i in arr:\n    if i not in unique_arr:\n        unique_arr.append(i)\nprint(unique_arr)",
+        note: "<h2 style='color: black;'>Remove Duplicates Function Description</h2><br>" +
+              "<ul>" +
+                  "<li><strong>Input for Array:</strong><br>" +
+                      "<ul>" +
+                          "<li><code>arr = [1, 2, 2, 3, 4, 4, 5]</code><br>" +
+                          "Initial array with potential duplicates.</li>" +
+                      "</ul>" +
+                  "</li><br>" +
+                  "<li><strong>Removing Duplicates:</strong><br>" +
+                      "<ul>" +
+                          "<li><code>for i in arr:</code><br>" +
+                          "Iterates through each element in the array.</li>" +
+                          "<li><code>if i not in unique_arr:</code><br>" +
+                          "Checks if the element is already in the unique array.</li>" +
+                          "<li><code>unique_arr.append(i)</code><br>" +
+                          "Adds the unique element to the new array.</li>" +
+                      "</ul>" +
+                  "</li>" +
+              "</ul>"
+    },
+    {
+        question: "Stage 6: Sum of Even Numbers in an Array",
+        correctOutput: "Write a Python program that calculates the sum of even numbers in an array using a for loop. Print the result.\nExample Input: [1, 2, 3, 4, 5, 6]\nExpected Output: Sum of even numbers: 12",
+        solution: "arr = [1, 2, 3, 4, 5, 6]\nsum_even = 0\nfor num in arr:\n    if num % 2 == 0:\n        sum_even += num\nprint(f'Sum of even numbers: {sum_even}')",
+        note: "<h2 style='color: black;'>Sum of Even Numbers Function Description</h2><br>" +
+              "<ul>" +
+                  "<li><strong>Input for Array:</strong><br>" +
+                      "<ul>" +
+                          "<li><code>arr = [1, 2, 3, 4, 5, 6]</code><br>" +
+                          "Initial array of numbers.</li>" +
+                      "</ul>" +
+                  "</li><br>" +
+                  "<li><strong>Calculating Sum of Even Numbers:</strong><br>" +
+                      "<ul>" +
+                          "<li><code>for num in arr:</code><br>" +
+                          "Iterates through each number in the array.</li>" +
+                          "<li><code>if num % 2 == 0:</code><br>" +
+                          "Checks if the number is even.</li>" +
+                          "<li><code>sum_even += num</code><br>" +
+                          "Adds even numbers to the sum.</li>" +
+                      "</ul>" +
+                  "</li>" +
+              "</ul>"
+    },
+    {
+        question: "Stage 7: Reverse a String",
+        correctOutput: "Write a Python program that reads a string from the user and reverses it using a for loop. Print the reversed string.\nExample Input: \"Python\"\nExpected Output: \"nohtyP\"",
+        solution: "string = input('Enter a string: ')\nreversed_string = ''\nfor char in string:\n    reversed_string = char + reversed_string\nprint(reversed_string)",
+        note: "<h2 style='color: black;'>String Reversal Function Description</h2><br>" +
+              "<ul>" +
+                  "<li><strong>Input for String:</strong><br>" +
+                      "<ul>" +
+                          "<li><code>string = input('Enter a string: ')</code><br>" +
+                          "Prompts the user to enter a string.</li>" +
+                      "</ul>" +
+                  "</li><br>" +
+                  "<li><strong>Reversing the String:</strong><br>" +
+                      "<ul>" +
+                          "<li><code>for char in string:</code><br>" +
+                          "Iterates through each character in the string.</li>" +
+                          "<li><code>reversed_string = char + reversed_string</code><br>" +
+                          "Prepends the character to the reversed string.</li>" +
+                      "</ul>" +
+                  "</li>" +
+              "</ul>"
+    },
+    {
+        question: "Stage 8: Find Maximum Element in an Array",
+        correctOutput: "Write a Python program that finds the maximum element in an array using a for loop.\nExample Input: [1, 2, 3, 4, 5]\nExpected Output: Maximum element: 5",
+        solution: "arr = [1, 2, 3, 4, 5]\nmax_element = arr[0]\nfor num in arr:\n    if num > max_element:\n        max_element = num\nprint(f'Maximum element: {max_element}')",
+        note: "<h2 style='color: black;'>Maximum Element Finding Function Description</h2><br>" +
+              "<ul>" +
+                  "<li><strong>Input for Array:</strong><br>" +
+                      "<ul>" +
+                          "<li><code>arr = [1, 2, 3, 4, 5]</code><br>" +
+                          "Initial array of numbers.</li>" +
+                      "</ul>" +
+                  "</li><br>" +
+                  "<li><strong>Finding Maximum Element:</strong><br>" +
+                      "<ul>" +
+                          "<li><code>for num in arr:</code><br>" +
+                          "Iterates through each number in the array.</li>" +
+                          "<li><code>if num > max_element:</code><br>" +
+                          "Updates the maximum element if the current number is greater.</li>" +
+                      "</ul>" +
+                  "</li>" +
+              "</ul>"
+    },
+    {
+        question: "Stage 9: Calculate Factorial of a Number",
+        correctOutput: "Write a Python program that calculates the factorial of a number using a for loop.\nExample Input: 5\nExpected Output: Factorial: 120",
+        solution: "num = int(input('Enter a number: '))\nfactorial = 1\nfor i in range(1, num + 1):\n    factorial *= i\nprint(f'Factorial: {factorial}')",
+        note: "<h2 style='color: black;'>Factorial Calculation Function Description</h2><br>" +
+              "<ul>" +
+                  "<li><strong>Input for Number:</strong><br>" +
+                      "<ul>" +
+                          "<li><code>num = int(input('Enter a number: '))</code><br>" +
+                          "Prompts the user to enter a number.</li>" +
+                      "</ul>" +
+                  "</li><br>" +
+                  "<li><strong>Calculating Factorial:</strong><br>" +
+                      "<ul>" +
+                          "<li><code>for i in range(1, num + 1):</code><br>" +
+                          "Iterates from 1 to the number (inclusive).</li>" +
+                          "<li><code>factorial *= i</code><br>" +
+                          "Multiplies the current factorial by the iterator.</li>" +
+                      "</ul>" +
+                  "</li>" +
+              "</ul>"
+    },
+    {
+        question: "Stage 10: Fibonacci Series",
+        correctOutput: "Write a Python program to generate the Fibonacci series up to n terms using a for loop.\nExample Input: 6\nExpected Output: 0, 1, 1, 2, 3, 5",
+        solution: "n = int(input('Enter number of terms: '))\na, b = 0, 1\nfibonacci_series = []\nfor _ in range(n):\n    fibonacci_series.append(a)\n    a, b = b, a + b\nprint(fibonacci_series)",
+        note: "<h2 style='color: black;'>Fibonacci Series Function Description</h2><br>" +
+              "<ul>" +
+                  "<li><strong>Input for Number of Terms:</strong><br>" +
+                      "<ul>" +
+                          "<li><code>n = int(input('Enter number of terms: '))</code><br>" +
+                          "Prompts the user for the number of terms in the Fibonacci series.</li>" +
+                      "</ul>" +
+                  "</li><br>" +
+                  "<li><strong>Generating Fibonacci Series:</strong><br>" +
+                      "<ul>" +
+                          "<li><code>for _ in range(n):</code><br>" +
+                          "Iterates n times to generate the series.</li>" +
+                          "<li><code>fibonacci_series.append(a)</code><br>" +
+                          "Appends the current number to the series.</li>" +
+                          "<li><code>a, b = b, a + b</code><br>" +
+                          "Updates a and b to the next numbers in the series.</li>" +
+                      "</ul>" +
+                  "</li>" +
+              "</ul>"
+    },
+	{
+        "question": "Stage 11: Check for Prime Numbers in an Array",
+        "correctOutput": "Write a Python program that checks which numbers in a 1D array are prime using a for loop.\nExample Input: [11, 18, 3, 7, 20]\nExpected Output: Prime numbers: [11, 3, 7]",
+        "solution": "arr = [11, 18, 3, 7, 20]\nprimes = []\nfor num in arr:\n    if num > 1:\n        is_prime = True\n        for i in range(2, int(num**0.5) + 1):\n            if num % i == 0:\n                is_prime = False\n                break\n        if is_prime:\n            primes.append(num)\nprint(f'Prime numbers: {primes}')",
+        "note": "<h2 style='color: black;'>Prime Number Check Function Description</h2><br>" +
+                "<ul>" +
+                    "<li><strong>Input for Array:</strong><br>" +
+                        "<ul>" +
+                            "<li><code>arr = [11, 18, 3, 7, 20]</code><br>" +
+                            "Initial array to check for prime numbers.</li>" +
+                        "</ul>" +
+                    "</li><br>" +
+                    "<li><strong>Finding Logic:</strong><br>" +
+                        "<ul>" +
+                            "<li><code>if num > 1:</code><br>" +
+                            "Checks if the number is greater than 1 (only positive integers can be prime).</li>" +
+                            "<li><code>for i in range(2, int(num**0.5) + 1):</code><br>" +
+                            "Checks for factors from 2 to the square root of the number.</li>" +
+                            "<li><code>if num % i == 0:</code><br>" +
+                            "If the number is divisible by any i, it's not prime.</li>" +
+                            "<li><code>primes.append(num)</code><br>" +
+                            "Adds the prime number to the list of primes.</li>" +
+                        "</ul>" +
+                    "</li>" +
+                "</ul>"
+    },
+    {
+        "question": "Stage 12: Find All Multiples of 3 and 5 in an Array",
+        "correctOutput": "Write a Python program that uses a for loop to find and print all the numbers in a 1D array that are divisible by both 3 and 5. Use a nested if statement to check divisibility.\nExample Input: [15, 30, 40, 50, 9, 6]\nExpected Output: [15, 30]",
+        "solution": "arr = [15, 30, 40, 50, 9, 6]\nmultiples = []\nfor num in arr:\n    if num % 3 == 0:\n        if num % 5 == 0:\n            multiples.append(num)\nprint(multiples)",
+        "note": "<h2 style='color: black;'>Multiples of 3 and 5 Function Description</h2><br>" +
+                "<ul>" +
+                    "<li><strong>Input for Array:</strong><br>" +
+                        "<ul>" +
+                            "<li><code>arr = [15, 30, 40, 50, 9, 6]</code><br>" +
+                            "Initial array to find multiples of 3 and 5.</li>" +
+                        "</ul>" +
+                    "</li><br>" +
+                    "<li><strong>Finding Logic:</strong><br>" +
+                        "<ul>" +
+                            "<li><code>if num % 3 == 0:</code><br>" +
+                            "Checks if the number is divisible by 3.</li>" +
+                            "<li><code>if num % 5 == 0:</code><br>" +
+                            "Checks if the number is divisible by 5, nested within the previous check.</li>" +
+                            "<li><code>multiples.append(num)</code><br>" +
+                            "Adds the number to the list of multiples if it meets both conditions.</li>" +
+                        "</ul>" +
+                    "</li>" +
+                "</ul>"
+    },
+     {
+        "question": "Stage 13: Sort an Array without Using Built-in Functions",
+        "correctOutput": "Write a Python program to sort a 1D array of integers in ascending order without using built-in functions. Use a for loop and nested if statements to compare elements and swap them as needed.\nExample Input: [5, 2, 9, 1, 5, 6]\nExpected Output: [1, 2, 5, 5, 6, 9",
+        "solution": "arr = [5, 2, 9, 1, 5, 6]\nfor i in range(len(arr)):\n    for j in range(0, len(arr) - i - 1):\n        if arr[j] > arr[j + 1]:\n            arr[j], arr[j + 1] = arr[j + 1], arr[j]\nprint(arr)",
+        "note": "<h2 style='color: black;'>Sort Array Function Description</h2><br>" +
+                "<ul>" +
+                    "<li><strong>Input for Array:</strong><br>" +
+                        "<ul>" +
+                            "<li><code>arr = [5, 2, 9, 1, 5, 6]</code><br>" +
+                            "Initial array to be sorted.</li>" +
+                        "</ul>" +
+                    "</li><br>" +
+                    "<li><strong>Sorting Logic:</strong><br>" +
+                        "<ul>" +
+                            "<li><code>for i in range(len(arr)):</code><br>" +
+                            "Outer loop to iterate over each element.</li>" +
+                            "<li><code>for j in range(0, len(arr) - i - 1):</code><br>" +
+                            "Inner loop for comparing elements.</li>" +
+                            "<li><code>if arr[j] > arr[j + 1]:</code><br>" +
+                            "Checks if the current element is greater than the next.</li>" +
+                            "<li><code>arr[j], arr[j + 1] = arr[j + 1], arr[j]</code><br>" +
+                            "Swaps elements if they are in the wrong order.</li>" +
+                        "</ul>" +
+                    "</li>" +
+                "</ul>"
+    },
+    {
+        "question": "Stage 14: Linear Search for an Element in an Array",
+        "correctOutput": "Write a Python program that uses a linear search technique to find a specified element in a 1D array. The program should prompt the user to enter the array elements and the target element to search for.\nExample Input: Array: [4, 2, 7, 1, 9]\nTarget Element: 7\nExpected Output: Element 7 found at index 2",
+        "solution": "arr = [4, 2, 7, 1, 9]\ntarget = 7\nfound = False\nfor index in range(len(arr)):\n    if arr[index] == target:\n        print(f'Element {target} found at index {index}')\n        found = True\n        break\nif not found:\n    print(f'Element {target} not found.')",
+        "note": "<h2 style='color: black;'>Linear Search Function Description</h2><br>" +
+                "<ul>" +
+                    "<li><strong>Input for Array:</strong><br>" +
+                        "<ul>" +
+                            "<li><code>arr = [4, 2, 7, 1, 9]</code><br>" +
+                            "Initial array to search through.</li>" +
+                        "</ul>" +
+                    "</li><br>" +
+                    "<li><strong>Input for Target Element:</strong><br>" +
+                        "<ul>" +
+                            "<li><code>target = 7</code><br>" +
+                            "The element to search for in the array.</li>" +
+                        "</ul>" +
+                    "</li><br>" +
+                    "<li><strong>Searching Logic:</strong><br>" +
+                        "<ul>" +
+                            "<li><code>for index in range(len(arr)):</code><br>" +
+                            "Iterates through each index of the array.</li>" +
+                            "<li><code>if arr[index] == target:</code><br>" +
+                            "Checks if the current element matches the target.</li>" +
+                            "<li><code>print(f'Element {target} found at index {index}')</code><br>" +
+                            "Prints the index if the element is found.</li>" +
+                        "</ul>" +
+                    "</li>" +
+                "</ul>"
+    },
+    {
+        "question": "Stage 15: Find the Second Largest Number in an Array",
+        "correctOutput": "Write a Python program that finds the second largest number in a 1D array. Use a for loop to iterate through the array and nested if statements to track the largest and second largest numbers.\nExample Input: [12, 5, 8, 19, 7, 15]\nExpected Output: Second largest: 15",
+        "solution": "arr = [12, 5, 8, 19, 7, 15]\nfirst, second = float('-inf'), float('-inf')\nfor num in arr:\n    if num > first:\n        second = first\n        first = num\n    elif num > second and num != first:\n        second = num\nprint(f'Second largest: {second}')",
+        "note": "<h2 style='color: black;'>Second Largest Number Function Description</h2><br>" +
+                "<ul>" +
+                    "<li><strong>Input for Array:</strong><br>" +
+                        "<ul>" +
+                            "<li><code>arr = [12, 5, 8, 19, 7, 15]</code><br>" +
+                            "Initial array to find the second largest number.</li>" +
+                        "</ul>" +
+                    "</li><br>" +
+                    "<li><strong>Finding Logic:</strong><br>" +
+                        "<ul>" +
+                            "<li><code>first, second = float('-inf'), float('-inf')</code><br>" +
+                            "Initializes first and second largest to negative infinity.</li>" +
+                            "<li><code>for num in arr:</code><br>" +
+                            "Iterates through each number in the array.</li>" +
+                            "<li><code>if num > first:</code><br>" +
+                            "Checks if the current number is greater than the first largest.</li>" +
+                            "<li><code>elif num > second and num != first:</code><br>" +
+                            "Checks for the second largest while ignoring duplicates.</li>" +
+                        "</ul>" +
+                    "</li>" +
+                "</ul>"
+    },
+    {
+        "question": "Stage 16: Find Elements Greater Than a Given Value",
+        "correctOutput": "Write a Python program that identifies and prints elements in a 1D array that are greater than a specified value. Use a for loop and a nested if statement for the condition check.\nExample Input: Array: [10, 15, 8, 23, 7], Value: 12\nExpected Output: [15, 23]",
+        "solution": "arr = [10, 15, 8, 23, 7]\nvalue = 12\nresult = []\nfor num in arr:\n    if num > value:\n        result.append(num)\nprint(result)",
+        "note": "<h2 style='color: black;'>Find Greater Elements Function Description</h2><br>" +
+                "<ul>" +
+                    "<li><strong>Input for Array:</strong><br>" +
+                        "<ul>" +
+                            "<li><code>arr = [10, 15, 8, 23, 7]</code><br>" +
+                            "Initial array to check against the specified value.</li>" +
+                        "</ul>" +
+                    "</li><br>" +
+                    "<li><strong>Input for Value:</strong><br>" +
+                        "<ul>" +
+                            "<li><code>value = 12</code><br>" +
+                            "The value to compare elements against.</li>" +
+                        "</ul>" +
+                    "</li><br>" +
+                    "<li><strong>Finding Logic:</strong><br>" +
+                        "<ul>" +
+                            "<li><code>for num in arr:</code><br>" +
+                            "Iterates through each number in the array.</li>" +
+                            "<li><code>if num > value:</code><br>" +
+                            "Checks if the number is greater than the specified value.</li>" +
+                            "<li><code>result.append(num)</code><br>" +
+                            "Adds the number to the results if it meets the condition.</li>" +
+                        "</ul>" +
+                    "</li>" +
+                "</ul>"
+    }
+];
+
+
+
+        var currentStage = 0;
+        var timer;
+        var timeElapsed = 0;
+
+        function startTimer() {
+            timer = setInterval(function() {
+                timeElapsed++;
+                var minutes = Math.floor(timeElapsed / 60);
+                var seconds = timeElapsed % 60;
+                document.getElementById('timeDisplay').innerText = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+            }, 1000);
+        }
+
+        function builtinRead(x) {
+            if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined) {
+                throw "File not found: '" + x + "'";
+            }
+            return Sk.builtinFiles["files"][x];
+        }
+
+        function input(promptText) {
+            var outputElement = document.getElementById('output');
+            return new Promise(function(resolve) {
+                var inputField = document.createElement('input');
+                inputField.setAttribute('type', 'text');
+                inputField.classList.add('console-input');
+                outputElement.appendChild(document.createTextNode(promptText));
+                outputElement.appendChild(inputField);
+
+                inputField.focus();
+
+                inputField.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        var userInput = inputField.value;
+                        outputElement.appendChild(document.createTextNode(userInput + '\n'));
+                        outputElement.removeChild(inputField);
+                        resolve(userInput);
+                    }
+                });
+            });
+        }
+
+        function runPythonCode() {
+            var outputElement = document.getElementById('output');
+            outputElement.innerHTML = '';
+            var code = editor.getValue();
+
+            Sk.configure({
+                output: function(text) {
+                    outputElement.appendChild(document.createTextNode(text));
+                },
+                read: builtinRead,
+                inputfun: input,
+                inputfunTakesPrompt: true
+            });
+
+            Sk.misceval.asyncToPromise(function() {
+                return Sk.importMainWithBody("<stdin>", false, code, true);
+            }).catch(function(err) {
+                outputElement.innerHTML = err.toString();
+            });
+
+            document.getElementById('note').innerHTML = stages[currentStage].note;
+        }
+
+        function showSolution() {
+            var solutionDiv = document.getElementById('solution');
+            solutionDiv.style.display = solutionDiv.style.display === 'block' ? 'none' : 'block';
+			var text =  stages[currentStage].solution;
+    // Replace newlines with <br> and spaces with &nbsp;
+			var formattedText = text.replace(/\n/g, "<br>").replace(/ /g, "&nbsp;");
+			document.getElementById("solution").innerHTML = formattedText;
+        }
+
+        function updateStage() {
+            document.getElementById('question').innerText = stages[currentStage].question;
+			document.getElementById('extend').innerHTML = stages[currentStage].correctOutput.replace(/\n/g, "<br>").replace(/ /g, "&nbsp;");
+            document.getElementById('note').innerHTML = '';
+            document.getElementById('solution').style.display = 'none';
+            editor.setValue('');
+            document.getElementById('output').innerText = '';
+        }
+
+        function nextStage() {
+            if (currentStage < stages.length - 1) {
+                currentStage++;
+                updateStage();
+            }
+        }
+
+        function previousStage() {
+            if (currentStage > 0) {
+                currentStage--;
+                updateStage();
+            }
+        }
+
+        function createStageList() {
+            var stageList = document.getElementById('stageList');
+            stages.forEach(function(stage, index) {
+                var listItem = document.createElement('li');
+                listItem.innerText = stage.question;
+                listItem.addEventListener('click', function() {
+                    currentStage = index;
+                    updateStage();
+                });
+                stageList.appendChild(listItem);
+            });
+        }
+
+        document.getElementById('runButton').addEventListener('click', runPythonCode);
+        document.getElementById('solutionButton').addEventListener('click', showSolution);
+        document.getElementById('nextButton').addEventListener('click', nextStage);
+        document.getElementById('previousButton').addEventListener('click', previousStage);
+
+        // Sidebar toggle
+        document.getElementById('toggleSidebar').addEventListener('click', function() {
+            var sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        });
+
+        // Setup CodeMirror editor
+        var editor = CodeMirror.fromTextArea(document.getElementById('pythonCode'), {
+            mode: 'python',
+            lineNumbers: true,
+            autoCloseBrackets: true,
+            matchBrackets: true
+        });
+
+        updateStage();
+        startTimer();
+        createStageList();
+    </script>
+		
+</script>
+
+</body>
+</html>
