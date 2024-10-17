@@ -284,6 +284,7 @@
         }
 		
 
+
 #noteModal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
@@ -342,6 +343,99 @@
 
 
     </style>
+   <style>
+        /* Modal Container */
+        #noteModal, #solutionModal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0, 0, 0, 0.7); /* Darker background for contrast */
+            transition: opacity 0.3s ease; /* Transition effect for opacity */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fff; /* White background for modal content */
+            margin: 10% auto; /* 10% from the top and bottom, centered */
+            padding: 20px;
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); /* Shadow effect */
+            width: 80%; /* Could be more or less, depending on screen size */
+            max-height: 80%; /* Max height of the modal */
+            overflow-y: auto; /* Enable vertical scrolling */
+            animation: fadeIn 0.5s; /* Animation for showing the modal */
+        }
+
+        /* Animation for fadeIn effect */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px); /* Start from slightly above */
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0); /* End at normal position */
+            }
+        }
+
+        /* Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000; /* Darker color on hover */
+            text-decoration: none;
+            cursor: pointer;
+        }
+	
+
+
+#timer {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.question {
+    max-width: 600px; /* Set a maximum width */
+    overflow-wrap: break-word; /* Prevent long words from causing overflow */
+    word-wrap: break-word; /* Compatibility for older browsers */
+    overflow: hidden; /* Prevent scrolling */
+    padding: 10px;
+    
+    border-radius: 5px; /* Optional: Rounded corners */
+    margin-bottom: 20px; /* Space between elements */
+    height: auto; /* Allow height to expand based on content */
+    white-space: normal; /* Allow text to wrap to the next line */
+	color: #27ae60; /* Green list items */
+    background-color: #1a1a1a; /* Black background */
+    border: 1px solid #27ae60; /* Green border */
+}
+
+.extend {
+    flex-grow: 1; /* Allow this element to fill remaining vertical space */
+    max-width: 600px; /* Set a maximum width */
+    overflow-wrap: break-word; /* Prevent long words from causing overflow */
+    word-wrap: break-word; /* Compatibility for older browsers */
+    overflow-y: auto; /* Allow vertical scrolling */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    padding: 10px;
+    border: 1px solid #ccc; /* Optional: Add border for clarity */
+    border-radius: 5px; /* Optional: Rounded corners */
+    margin-bottom: 20px; /* Space between elements */
+}
+
+
+    </style>
 
 </head>
 <body>
@@ -365,13 +459,13 @@
 
    <div class="container">
         <div class="left">
-            <h1>Basic Stages</h1>
+            <h1>Python Learning Stages</h1>
             <div id="timer">Time: <span id="timeDisplay">00:00</span></div>
             <div class="question" id="question"></div>
-			<div id="solution" class="solution"><p>solution:</b></p></div>
+			
 			<div class="extend" id="extend"></div>
             
-            <div id="solution" class="solution"></div>
+            <div style="visibility: hidden;"id="solution" class="solution"></div>
         </div>
 
         <div class="middle">
@@ -386,7 +480,7 @@
                 <button id="previousButton">Previous Stage</button>
                 <button id="nextButton">Next Stage</button>
             </div>
-			<div id="note"></div>
+			<div style="display:none" id="note"></div>
 			</div>
 			<div class="out">
             
@@ -408,12 +502,21 @@
         <button id="toggleSidebar">☰</button>
     </div>
 	
-	 <!-- Modal for Notes -->
+<!-- Note Modal -->
     <div id="noteModal">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <h3 style="color:  #27ae60; /">Note</h3>
-            <p id="noteText"></p>
+            <span class="close" data-modal="noteModal">&times;</span>
+            <h3 style="color: #27ae60;">Note</h3>
+            <p id="noteText">This is a placeholder for the note content.</p>
+        </div>
+    </div>
+
+    <!-- Solution Modal -->
+    <div id="solutionModal">
+        <div class="modal-content">
+            <span class="close" data-modal="solutionModal">&times;</span>
+            <h3 style="color: #3498db;">Solution</h3>
+            <p id="solutionText">This is a placeholder for the solution content.</p>
         </div>
     </div>
 
@@ -428,26 +531,48 @@
 
 
   <script>
+      
+       
+
         // Flash Note Button Event
         document.getElementById('flashNoteButton').onclick = function() {
             var noteText = stages[currentStage].note || "No note available.";
-            
-            // Set the note text with HTML rendering
-            document.getElementById('noteText').innerHTML = noteText;
-            
-            // Show the modal
-            document.getElementById('noteModal').style.display = "flex";
+            document.getElementById('noteText').innerHTML = noteText; // Set the note text
+            showModal('noteModal');
         };
 
-        // Close Modal
-        document.querySelector('.close').onclick = function() {
-            document.getElementById('noteModal').style.display = "none";
+        // Solution Button Event
+        document.getElementById('solutionButton').onclick = function() {
+            var solutionText = stages[currentStage].solution || "No solution available.";
+            document.getElementById('solutionText').innerHTML = solutionText.replace(/\n/g, "<br>").replace(/ /g, "&nbsp;"); // Set the solution text
+            showModal('solutionModal');
         };
+          
+        // Show Modal Function .replace(/\n/g, "<br>").replace(/ /g, "&nbsp;");
+        function showModal(modalId) {
+            // Hide any open modals
+            document.getElementById('noteModal').style.display = 'none';
+            document.getElementById('solutionModal').style.display = 'none';
+
+            // Show the selected modal
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        // Close Modal
+        document.querySelectorAll('.close').forEach(function(element) {
+            element.onclick = function() {
+                var modalId = element.getAttribute('data-modal');
+                document.getElementById(modalId).style.display = 'none';
+            };
+        });
 
         // Hide Modal when clicked outside
         window.onclick = function(event) {
             if (event.target == document.getElementById('noteModal')) {
                 document.getElementById('noteModal').style.display = "none";
+            }
+            if (event.target == document.getElementById('solutionModal')) {
+                document.getElementById('solutionModal').style.display = "none";
             }
         };
     </script>
